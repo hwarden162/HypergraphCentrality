@@ -1,0 +1,133 @@
+---
+title: "Untitled"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: rows
+    vertical_layout: scroll
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(highcharter)
+load("/Users/hugh/Documents/University/Maths/Year4/Project/RCode/CentralityCode/Data/Betweenness.RData")
+```
+
+Coding
+==========
+
+```{r, dpi=240}
+knitr::include_url("codemarkdown.html", height = "800px")
+```
+
+BC Comp
+==========
+
+Row {data-height=500}
+----------
+
+### **Active and Passive Members** {data-width=800}
+
+```{r}
+x <- c("Protein", "Graph BC:", "Hype (All) BC:", "Hyper Degree:")
+y <- sprintf("{point.%s:.2f}", c("protein", "graph", "hall", "ncomp"))
+tltip <- tooltip_table(x,y)
+
+bc.data %>%
+  hchart("point", hcaes(x = graph, y = hall), colorKey = "ncomp") %>%
+  hc_colorAxis(minColor = "blue",
+               maxColor = "cyan",
+               min = 0,
+               max = max(bc.data$ncomp))%>%
+  hc_xAxis(title = list(text = "Graph Betweenness Centrality")) %>%
+  hc_yAxis(title = list(text = "Hypergraph Betweenness Centrality - Active and Passive Members")) %>%
+  hc_tooltip(useHTML = TRUE, headerFormat = "", pointFormat = tltip)
+```
+
+### **Active and Passive Members**
+
+Lorem Ipsum yada yada yada
+
+```{r}
+gauge(round(cor(bc.data$graph, bc.data$hall), digits = 2),
+  min = 0,
+  max = 1,
+  gaugeSectors(danger = c(0, 0.7),
+               warning = c(0.7, 0.9),
+               success = c(0.9, 1)
+               )
+)
+```
+
+Row {data-height=500}
+----------
+
+### **Active and Non-Terminating Passive Members** {data-width=800}
+
+```{r}
+x <- c("Protein", "Graph BC:", "Hype (NT) BC:", "Hyper Degree:")
+y <- sprintf("{point.%s:.2f}", c("protein", "graph", "hnt", "ncomp"))
+tltip <- tooltip_table(x,y)
+
+bc.data %>%
+  hchart("point", hcaes(x = graph, y = hnt), colorKey = "ncomp") %>%
+  hc_colorAxis(minColor = "blue",
+               maxColor = "cyan",
+               min = 0,
+               max = max(bc.data$ncomp))%>%
+  hc_xAxis(title = list(text = "Graph Betweenness Centrality")) %>%
+  hc_yAxis(title = list(text = "Hypergraph Betweenness Centrality - Active and Non-Terminating Passive Members")) %>%
+  hc_tooltip(useHTML = TRUE, headerFormat = "", pointFormat = tltip)
+```
+
+### **Active and Non-Terminating Passive Members**
+
+Lorem Ipsum yada yada yada
+
+```{r}
+gauge(round(cor(bc.data$graph, bc.data$hnt), digits = 2),
+  min = 0,
+  max = 1,
+  gaugeSectors(danger = c(0, 0.7),
+               warning = c(0.7, 0.9),
+               success = c(0.9, 1)
+               )
+)
+```
+
+Row {data-height=500}
+----------
+
+### **Active Members** {data-width=800}
+
+```{r}
+x <- c("Protein", "Graph BC:", "Hype (Act) BC:", "Hyper Degree:")
+y <- sprintf("{point.%s:.2f}", c("protein", "graph", "hact", "ncomp"))
+tltip <- tooltip_table(x,y)
+
+bc.data %>%
+  hchart("point", hcaes(x = graph, y = hact), colorKey = "ncomp") %>%
+  hc_colorAxis(minColor = "blue",
+               maxColor = "cyan",
+               min = 0,
+               max = max(bc.data$ncomp))%>%
+  hc_xAxis(title = list(text = "Graph Betweenness Centrality")) %>%
+  hc_yAxis(title = list(text = "Hypergraph Betweenness Centrality - Active Members")) %>%
+  hc_tooltip(useHTML = TRUE, headerFormat = "", pointFormat = tltip)
+```
+
+### **Active Members**
+
+Lorem Ipsum yada yada yada
+
+```{r}
+gauge(round(cor(bc.data$graph, bc.data$hact), digits = 2),
+  min = 0,
+  max = 1,
+  gaugeSectors(danger = c(0, 0.7),
+               warning = c(0.7, 0.9),
+               success = c(0.9, 1)
+               )
+)
+```
+
+
