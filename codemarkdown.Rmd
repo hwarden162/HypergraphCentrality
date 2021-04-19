@@ -13,3 +13,82 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
 ```
+
+# Introduction
+
+# ConstructionCode
+
+This script is used to read in protein interaction data and convert it into a form which can be utilised to calculate betweenness centality.
+
+Firstly, the igraph package is loaded and the working directory is set
+
+```{r}
+library(igraph)
+setwd("/Users/hugh/Documents/University/Maths/Year4/Project/RCode/CentralityCode")
+```
+
+Then the mips interaction data set is imported and processed
+
+```{r}
+mips.full <- read.csv("Data/mips.txt", sep = "\t")
+mips.full <- mips.full[1:217,]
+mips.edgelist <- mips.full[,1:2]
+```
+
+The reason only the first 217 entries of the mis data is to make this feasible to run on a laptop with low processing power. The more powerful the machine running this code, the more entries should be used.
+
+Then the full yeast interactome is loaded
+
+```{r}
+ppi.full <- as.data.frame(read.csv("/Users/hugh/Documents/University/Maths/Year4/Project/RCode/BIOGRID-ORGANISM-Saccharomyces_cerevisiae_S288c-4.3.195.tab3.txt", sep = "\t"))
+ppi.edgelist <- ppi.full[,6:7]
+```
+
+This data is not available on this github repository as it is too large, but it can be downloaded from the BIOGRID website.
+
+Then the proteins involved in the mips and ppi data sets are found. If the computer is powerful enough, the whole yeast interactome should be analysed. Otherwise, the mips data set will select important proteins that can also be linked back to annotated complexes.
+
+```{r}
+mips.proteins <- unique(c(mips.edgelist[,1], mips.edgelist[,2]))
+ppi.proteins <- unique(c(ppi.edgelist[,1], ppi.edgelist[,2]))
+ppi.edgelist <- unique(ppi.edgelist[which((ppi.edgelist[,1] %in% mips.proteins)&(ppi.edgelist[,2] %in% mips.proteins)),])
+```
+
+This edgelist is now used to make a graph object. This is then parsed as a matrix, that is manipulated to simplify the graph.
+
+```{r}
+ppi.graph <- graph_from_edgelist(as.matrix(ppi.edgelist), directed = FALSE)
+ppi.adj_mat <- as.matrix(as_adjacency_matrix(ppi.graph))
+rnames <- rownames(ppi.adj_mat)
+ppi.adj_mat <- matrix(as.numeric(ppi.adj_mat > 0), ncol = ncol(ppi.adj_mat))
+diag(ppi.adj_mat) <- 0
+ppi.graph <- graph_from_adjacency_matrix(ppi.adj_mat, mode = "undirected", diag = FALSE)
+```
+
+Then all of the maximal cliques within the graph are identified.
+
+```{r}
+ppi.cliques <- max_cliques(ppi.graph, min = 2)
+```
+
+Each of these maximal cliques is then assumed to be a protein complex, and therefore modelled as a hyperedge.
+
+```{r}
+ppi.inc_mat <- matrix(0, nrow = length(rnames), ncol = length(ppi.cliques))
+rownames(ppi.inc_mat) <- rnames
+for (i in 1:length(ppi.cliques)){
+  ppi.inc_mat[ppi.cliques[[i]],i] <- 1
+}
+```
+
+Given a more detailed dataset, these cliques would not need to be found. The protein complex annotations should be used to populate the incidence matrix.
+
+This data is then saved to be used to calculate betweenness centralities.
+
+```{r}
+save(ppi.graph, ppi.inc_mat, file = "Data/Constructions.RData")
+```
+
+# HypergraphBC
+
+# BetweennessCode

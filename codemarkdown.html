@@ -271,15 +271,52 @@ div.tocify {
 </div>
 
 
-<div id="a" class="section level1">
-<h1><span class="header-section-number">1</span> A</h1>
+<div id="introduction" class="section level1">
+<h1><span class="header-section-number">1</span> Introduction</h1>
 </div>
-<div id="b" class="section level1">
-<h1><span class="header-section-number">2</span> B</h1>
+<div id="constructioncode" class="section level1">
+<h1><span class="header-section-number">2</span> ConstructionCode</h1>
+<p>This script is used to read in protein interaction data and convert it into a form which can be utilised to calculate betweenness centality.</p>
+<p>Firstly, the igraph package is loaded and the working directory is set</p>
+<pre class="r"><code>library(igraph)
+setwd(&quot;/Users/hugh/Documents/University/Maths/Year4/Project/RCode/CentralityCode&quot;)</code></pre>
+<p>Then the mips interaction data set is imported and processed</p>
+<pre class="r"><code>mips.full &lt;- read.csv(&quot;Data/mips.txt&quot;, sep = &quot;\t&quot;)
+mips.full &lt;- mips.full[1:217,]
+mips.edgelist &lt;- mips.full[,1:2]</code></pre>
+<p>The reason only the first 217 entries of the mis data is to make this feasible to run on a laptop with low processing power. The more powerful the machine running this code, the more entries should be used.</p>
+<p>Then the full yeast interactome is loaded</p>
+<pre class="r"><code>ppi.full &lt;- as.data.frame(read.csv(&quot;/Users/hugh/Documents/University/Maths/Year4/Project/RCode/BIOGRID-ORGANISM-Saccharomyces_cerevisiae_S288c-4.3.195.tab3.txt&quot;, sep = &quot;\t&quot;))
+ppi.edgelist &lt;- ppi.full[,6:7]</code></pre>
+<p>This data is not available on this github repository as it is too large, but it can be downloaded from the BIOGRID website.</p>
+<p>Then the proteins involved in the mips and ppi data sets are found. If the computer is powerful enough, the whole yeast interactome should be analysed. Otherwise, the mips data set will select important proteins that can also be linked back to annotated complexes.</p>
+<pre class="r"><code>mips.proteins &lt;- unique(c(mips.edgelist[,1], mips.edgelist[,2]))
+ppi.proteins &lt;- unique(c(ppi.edgelist[,1], ppi.edgelist[,2]))
+ppi.edgelist &lt;- unique(ppi.edgelist[which((ppi.edgelist[,1] %in% mips.proteins)&amp;(ppi.edgelist[,2] %in% mips.proteins)),])</code></pre>
+<p>This edgelist is now used to make a graph object. This is then parsed as a matrix, that is manipulated to simplify the graph.</p>
+<pre class="r"><code>ppi.graph &lt;- graph_from_edgelist(as.matrix(ppi.edgelist), directed = FALSE)
+ppi.adj_mat &lt;- as.matrix(as_adjacency_matrix(ppi.graph))
+rnames &lt;- rownames(ppi.adj_mat)
+ppi.adj_mat &lt;- matrix(as.numeric(ppi.adj_mat &gt; 0), ncol = ncol(ppi.adj_mat))
+diag(ppi.adj_mat) &lt;- 0
+ppi.graph &lt;- graph_from_adjacency_matrix(ppi.adj_mat, mode = &quot;undirected&quot;, diag = FALSE)</code></pre>
+<p>Then all of the maximal cliques within the graph are identified.</p>
+<pre class="r"><code>ppi.cliques &lt;- max_cliques(ppi.graph, min = 2)</code></pre>
+<p>Each of these maximal cliques is then assumed to be a protein complex, and therefore modelled as a hyperedge.</p>
+<pre class="r"><code>ppi.inc_mat &lt;- matrix(0, nrow = length(rnames), ncol = length(ppi.cliques))
+rownames(ppi.inc_mat) &lt;- rnames
+for (i in 1:length(ppi.cliques)){
+  ppi.inc_mat[ppi.cliques[[i]],i] &lt;- 1
+}</code></pre>
+<p>Given a more detailed dataset, these cliques would not need to be found. The protein complex annotations should be used to populate the incidence matrix.</p>
+<p>This data is then saved to be used to calculate betweenness centralities.</p>
+<pre class="r"><code>save(ppi.graph, ppi.inc_mat, file = &quot;Data/Constructions.RData&quot;)</code></pre>
 </div>
-<div id="c" class="section level1">
-<h1><span class="header-section-number">3</span> C</h1>
-<pre class="r"><code>print(&quot;Hello&quot;)</code></pre>
+<div id="hypergraphbc" class="section level1">
+<h1><span class="header-section-number">3</span> HypergraphBC</h1>
+</div>
+<div id="betweennesscode" class="section level1">
+<h1><span class="header-section-number">4</span> BetweennessCode</h1>
 </div>
 
 

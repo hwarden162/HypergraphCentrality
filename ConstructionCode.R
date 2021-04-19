@@ -6,7 +6,7 @@ mips.full <- read.csv("/Users/hugh/Documents/University/Maths/Year4/Project/RCod
 mips.full <- mips.full[1:217,]
 mips.edgelist <- mips.full[,1:2]
 
-ppi.full <- as.data.frame(read.csv("/Users/hugh/Documents/University/Maths/Year4/Project/RCode/CentralityCode/Data/BIOGRID-ORGANISM-Saccharomyces_cerevisiae_S288c-4.3.195.tab3.txt", sep = "\t"))
+ppi.full <- as.data.frame(read.csv("/Users/hugh/Documents/University/Maths/Year4/Project/RCode/BIOGRID-ORGANISM-Saccharomyces_cerevisiae_S288c-4.3.195.tab3.txt", sep = "\t"))
 ppi.edgelist <- ppi.full[,6:7]
 
 mips.proteins <- unique(c(mips.edgelist[,1], mips.edgelist[,2]))
