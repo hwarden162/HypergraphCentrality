@@ -16,6 +16,8 @@ load("/Users/hugh/Documents/University/Maths/Year4/Project/RCode/CentralityCode/
 Coding
 ==========
 
+Row {data-height=800}
+----------
 ```{r, dpi=240}
 knitr::include_url("codemarkdown.html", height = "800px")
 ```
