@@ -16,6 +16,6 @@ names(hypergraph.bc) <- c("all", "nt", "act")
 
 graph.bc <- betweenness(ppi.graph)
 
-bc.data <- data.frame(protein = rownames(ppi.inc_mat), ncomp = apply(ppi.inc_mat, 1, sum),graph = graph.bc, hall = hypergraph.bc$all, hnt = hypergraph.bc$nt, hact = hypergraph.bc$act)
+bc.data <- data.frame(protein = rownames(ppi.inc_mat), gdeg = degree(ppi.graph), ncomp = apply(ppi.inc_mat, 1, sum),graph = graph.bc, hall = hypergraph.bc$all, hnt = hypergraph.bc$nt, hact = hypergraph.bc$act)
 
 save(bc.data, file = "/Users/hugh/Documents/University/Maths/Year4/Project/RCode/CentralityCode/Data/Betweenness.RData")

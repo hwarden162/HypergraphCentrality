@@ -394,6 +394,26 @@ for p in nx.all_shortest_paths(temp, n_vert+1, n_vert+2):
 </div>
 <div id="betweennesscode" class="section level1">
 <h1><span class="header-section-number">4</span> BetweennessCode</h1>
+<p>This script calculates all versions of betweenness centrality and saves them.</p>
+<p>Firstly, the required packages are loaded</p>
+<pre class="r"><code>library(igraph)
+library(reticulate)</code></pre>
+<p>Then, the &quot;default&quot; virtual environment is loaded for reticulate, this already has the numpy and networkx packages installed on it. Also, the HypergraphBC code from above is loaded into the environment, allowing access to both functions from the R environment.</p>
+<pre class="r"><code>use_virtualenv(&quot;default&quot;)
+source_python(&quot;/Users/hugh/Documents/University/Maths/Year4/Project/RCode/CentralityCode/HypergraphBC.py&quot;)</code></pre>
+<p>The data previously calculated is loaded</p>
+<pre class="r"><code>load(&quot;/Users/hugh/Documents/University/Maths/Year4/Project/RCode/CentralityCode/Data/Constructions.RData&quot;)</code></pre>
+<p>The python code to calculate the dual adjacency matrix is called. The result is then binarised and loops are removed.</p>
+<pre class="r"><code>hypergaph.dual_adj_mat &lt;- get_hyperedge_dual_adj_mat(ppi.inc_mat)
+hypergaph.dual_adj_mat &lt;- matrix(as.numeric(hypergaph.dual_adj_mat &gt; 0), ncol = ncol(hypergaph.dual_adj_mat))
+diag(hypergaph.dual_adj_mat) &lt;- 0</code></pre>
+<p>Then, the python code to calculate all forms of betweenness centrality is called and so is the traditional graph betweenness centrality.</p>
+<pre class="r"><code>hypergraph.bc &lt;- get_hypergraph_betweenness(hypergaph.dual_adj_mat, ppi.inc_mat)
+names(hypergraph.bc) &lt;- c(&quot;all&quot;, &quot;nt&quot;, &quot;act&quot;)
+graph.bc &lt;- betweenness(ppi.graph)</code></pre>
+<p>All pertinent data is then collected in a data frame and saved</p>
+<pre class="r"><code>bc.data &lt;- data.frame(protein = rownames(ppi.inc_mat), gdeg = degree(ppi.graph), ncomp = apply(ppi.inc_mat, 1, sum),graph = graph.bc, hall = hypergraph.bc$all, hnt = hypergraph.bc$nt, hact = hypergraph.bc$act)
+save(bc.data, file = &quot;/Users/hugh/Documents/University/Maths/Year4/Project/RCode/CentralityCode/Data/Betweenness.RData&quot;)</code></pre>
 </div>
 
 

@@ -5,6 +5,8 @@ output:
     orientation: rows
     vertical_layout: scroll
     theme: flatly
+    social: ["twitter", "menu"]
+    source_code: embed
 ---
 
 ```{r setup, include=FALSE}
@@ -37,7 +39,7 @@ cutoff.graph <- quantile(bc.data$graph, 0.8)
 
 bc.data$class <- ((bc.data$hall > cutoff.hype) == (bc.data$graph > cutoff.graph))
 
-x <- c("Protein", "Graph BC:", "Hype (All) BC:", "Agreement")
+x <- c("Protein", "Graph BC:", "Hype (All) BC:", "Agreement:")
 y <- sprintf("{point.%s:.2f}", c("protein", "graph", "hall", "class"))
 tltip <- tooltip_table(x,y)
 
@@ -93,7 +95,7 @@ cutoff.graph <- quantile(bc.data$graph, 0.8)
 
 bc.data$class <- ((bc.data$hnt > cutoff.hype) == (bc.data$graph > cutoff.graph))
 
-x <- c("Protein", "Graph BC:", "Hype (NT) BC:", "Agreement")
+x <- c("Protein", "Graph BC:", "Hype (NT) BC:", "Agreement:")
 y <- sprintf("{point.%s:.2f}", c("protein", "graph", "hnt", "class"))
 tltip <- tooltip_table(x,y)
 
@@ -149,7 +151,7 @@ cutoff.graph <- quantile(bc.data$graph, 0.8)
 
 bc.data$class <- ((bc.data$hact > cutoff.hype) == (bc.data$graph > cutoff.graph))
 
-x <- c("Protein", "Graph BC:", "Hype (Act) BC:", "Agreement")
+x <- c("Protein", "Graph BC:", "Hype (Act) BC:", "Agreement:")
 y <- sprintf("{point.%s:.2f}", c("protein", "graph", "hact", "class"))
 tltip <- tooltip_table(x,y)
 
@@ -197,8 +199,10 @@ gauge(round(length(which(bc.data$class))/length(bc.data$class), digits = 2),
 Hype Deg vs Graph Deg
 ==========
 
-Row
+Row {data-height=500}
 ----------
+
+### **Active and Passive Members** {data-width=800}
 
 ```{r}
 
@@ -207,7 +211,7 @@ cutoff.graph <- quantile(bc.data$gdeg, 0.8)
 
 bc.data$class <- ((bc.data$ncomp > cutoff.hype) == (bc.data$gdeg > cutoff.graph))
 
-x <- c("Protein", "Graph Deg:", "Hype Deg:", "Agreement")
+x <- c("Protein", "Graph Deg:", "Hype Deg:", "Agreement:")
 y <- sprintf("{point.%s:.2f}", c("protein", "gdeg", "ncomp", "class"))
 tltip <- tooltip_table(x,y)
 
@@ -216,5 +220,481 @@ bc.data %>%
   hc_colors(c("red", "lime")) %>%
   hc_tooltip(useHTML = TRUE, headerFormat = "", pointFormat = tltip)
 ```
+
+### **Active and Passive Members** 
+
+Lorem Ipsum yada yada yada
+
+Row
+----------
+
+### Pearson's Moment Correlation Coefficient
+```{r}
+gauge(round(cor(bc.data$gdeg, bc.data$ncomp), digits = 2),
+  min = 0,
+  max = 1,
+  gaugeSectors(danger = c(0, 0.7),
+               warning = c(0.7, 0.9),
+               success = c(0.9, 1)
+               )
+)
+```
+
+### Class Agreement
+
+```{r}
+gauge(round(length(which(bc.data$class))/length(bc.data$class), digits = 2),
+  min = 0,
+  max = 1,
+  gaugeSectors(danger = c(0, 0.7),
+               warning = c(0.7, 0.9),
+               success = c(0.9, 1)
+               )
+)
+```
+
+Graph Classifications
+==========
+
+Row {data-height=500}
+----------
+
+### **Classifications Made By Graph Methods** {data-width=800}
+
+```{r}
+
+cutoff.hub <- quantile(bc.data$gdeg, 0.8)
+cutoff.bot <- quantile(bc.data$graph, 0.8)
+
+hub <- bc.data$gdeg > cutoff.hub
+bot <- bc.data$graph > cutoff.bot
+
+bc.data$class <- as.numeric(hub) + 2*as.numeric(bot)
+
+bc.data$class[which(bc.data$class == 0)] <- "NH-NB"
+bc.data$class[which(bc.data$class == 1)] <- "H-NB"
+bc.data$class[which(bc.data$class == 2)] <- "NH-B"
+bc.data$class[which(bc.data$class == 3)] <- "H-B"
+
+x <- c("Protein", "Graph Deg:", "Graph BC:", "Class:")
+y <- sprintf("{point.%s:.2f}", c("protein", "gdeg", "graph", "class"))
+tltip <- tooltip_table(x,y)
+
+bc.data %>%
+  hchart("point", hcaes(x = gdeg, y = graph, group = class)) %>%
+  hc_colors(c("lime", "yellow", "orange", "red")) %>%
+  hc_tooltip(useHTML = TRUE, headerFormat = "", pointFormat = tltip)
+```
+
+### Classifications Made By Graph Methods
+
+Lorem Ipsum yada yada yada
+
+Row
+----------
+
+### Pearson's Moment Correlation Coefficient
+
+```{r}
+gauge(round(cor(bc.data$gdeg, bc.data$graph), digits = 2),
+  min = 0,
+  max = 1,
+  gaugeSectors(danger = c(0, 0.7),
+               warning = c(0.7, 0.9),
+               success = c(0.9, 1)
+               )
+)
+```
+
+### Class Agreement
+
+```{r}
+gauge(round(length(which(hub == bot))/length(bc.data$class), digits = 2),
+  min = 0,
+  max = 1,
+  gaugeSectors(danger = c(0, 0.7),
+               warning = c(0.7, 0.9),
+               success = c(0.9, 1)
+               )
+)
+```
+
+Hypergraph Classifications
+==========
+
+Row {data-height=500}
+----------
+
+### **Classifications Made By Hypergraph Methods - Active and Passive Members** {data-width=800}
+
+```{r}
+
+cutoff.hub <- quantile(bc.data$ncomp, 0.8)
+cutoff.bot <- quantile(bc.data$hall, 0.8)
+
+hub <- bc.data$ncomp > cutoff.hub
+bot <- bc.data$hall > cutoff.bot
+
+bc.data$class <- as.numeric(hub) + 2*as.numeric(bot)
+
+bc.data$class[which(bc.data$class == 0)] <- "NH-NB"
+bc.data$class[which(bc.data$class == 1)] <- "H-NB"
+bc.data$class[which(bc.data$class == 2)] <- "NH-B"
+bc.data$class[which(bc.data$class == 3)] <- "H-B"
+
+x <- c("Protein", "Hype Deg:", "Hype (All) BC:", "Class:")
+y <- sprintf("{point.%s:.2f}", c("protein", "ncomp", "hall", "class"))
+tltip <- tooltip_table(x,y)
+
+bc.data %>%
+  hchart("point", hcaes(x = ncomp, y = hall, group = class)) %>%
+  hc_colors(c("lime", "yellow", "orange", "red")) %>%
+  hc_tooltip(useHTML = TRUE, headerFormat = "", pointFormat = tltip)
+```
+
+### Classifications Made By Graph Methods
+
+Lorem Ipsum yada yada yada
+
+Row
+----------
+
+### Pearson's Moment Correlation Coefficient
+
+```{r}
+gauge(round(cor(bc.data$ncomp, bc.data$hall), digits = 2),
+  min = 0,
+  max = 1,
+  gaugeSectors(danger = c(0, 0.7),
+               warning = c(0.7, 0.9),
+               success = c(0.9, 1)
+               )
+)
+```
+
+### Class Agreement
+
+```{r}
+gauge(round(length(which(hub == bot))/length(bc.data$class), digits = 2),
+  min = 0,
+  max = 1,
+  gaugeSectors(danger = c(0, 0.7),
+               warning = c(0.7, 0.9),
+               success = c(0.9, 1)
+               )
+)
+```
+
+Row {data-height=500}
+----------
+
+### **Classifications Made By Hypergraph Methods - Active and  Non-Terminating Passive Members** {data-width=800}
+
+```{r}
+
+cutoff.hub <- quantile(bc.data$ncomp, 0.8)
+cutoff.bot <- quantile(bc.data$hnt, 0.8)
+
+hub <- bc.data$ncomp > cutoff.hub
+bot <- bc.data$hnt > cutoff.bot
+
+bc.data$class <- as.numeric(hub) + 2*as.numeric(bot)
+
+bc.data$class[which(bc.data$class == 0)] <- "NH-NB"
+bc.data$class[which(bc.data$class == 1)] <- "H-NB"
+bc.data$class[which(bc.data$class == 2)] <- "NH-B"
+bc.data$class[which(bc.data$class == 3)] <- "H-B"
+
+x <- c("Protein", "Hype Deg:", "Hype (All) BC:", "Class:")
+y <- sprintf("{point.%s:.2f}", c("protein", "ncomp", "hnt", "class"))
+tltip <- tooltip_table(x,y)
+
+bc.data %>%
+  hchart("point", hcaes(x = ncomp, y = hnt, group = class)) %>%
+  hc_colors(c("lime", "yellow", "orange", "red")) %>%
+  hc_tooltip(useHTML = TRUE, headerFormat = "", pointFormat = tltip)
+```
+
+### Classifications Made By Graph Methods
+
+Lorem Ipsum yada yada yada
+
+Row
+----------
+
+### Pearson's Moment Correlation Coefficient
+
+```{r}
+gauge(round(cor(bc.data$ncomp, bc.data$hnt), digits = 2),
+  min = 0,
+  max = 1,
+  gaugeSectors(danger = c(0, 0.7),
+               warning = c(0.7, 0.9),
+               success = c(0.9, 1)
+               )
+)
+```
+
+### Class Agreement
+
+```{r}
+gauge(round(length(which(hub == bot))/length(bc.data$class), digits = 2),
+  min = 0,
+  max = 1,
+  gaugeSectors(danger = c(0, 0.7),
+               warning = c(0.7, 0.9),
+               success = c(0.9, 1)
+               )
+)
+```
+
+Row {data-height=500}
+----------
+
+### **Classifications Made By Hypergraph Methods - Active Members** {data-width=800}
+
+```{r}
+
+cutoff.hub <- quantile(bc.data$ncomp, 0.8)
+cutoff.bot <- quantile(bc.data$hact, 0.8)
+
+hub <- bc.data$ncomp > cutoff.hub
+bot <- bc.data$hact > cutoff.bot
+
+bc.data$class <- as.numeric(hub) + 2*as.numeric(bot)
+
+bc.data$class[which(bc.data$class == 0)] <- "NH-NB"
+bc.data$class[which(bc.data$class == 1)] <- "H-NB"
+bc.data$class[which(bc.data$class == 2)] <- "NH-B"
+bc.data$class[which(bc.data$class == 3)] <- "H-B"
+
+x <- c("Protein", "Hype Deg:", "Hype (All) BC:", "Class:")
+y <- sprintf("{point.%s:.2f}", c("protein", "ncomp", "hact", "class"))
+tltip <- tooltip_table(x,y)
+
+bc.data %>%
+  hchart("point", hcaes(x = ncomp, y = hact, group = class)) %>%
+  hc_colors(c("lime", "yellow", "orange", "red")) %>%
+  hc_tooltip(useHTML = TRUE, headerFormat = "", pointFormat = tltip)
+```
+
+### Classifications Made By Graph Methods
+
+Lorem Ipsum yada yada yada
+
+Row
+----------
+
+### Pearson's Moment Correlation Coefficient
+
+```{r}
+gauge(round(cor(bc.data$ncomp, bc.data$hall), digits = 2),
+  min = 0,
+  max = 1,
+  gaugeSectors(danger = c(0, 0.7),
+               warning = c(0.7, 0.9),
+               success = c(0.9, 1)
+               )
+)
+```
+
+### Class Agreement
+
+```{r}
+gauge(round(length(which(hub == bot))/length(bc.data$class), digits = 2),
+  min = 0,
+  max = 1,
+  gaugeSectors(danger = c(0, 0.7),
+               warning = c(0.7, 0.9),
+               success = c(0.9, 1)
+               )
+)
+```
+
+Hype BC Comparison
+==========
+
+Row {data-height=500}
+----------
+
+### **Active and Passive Members vs Active and Non-Terminating Passive Members** {data-width=800}
+
+```{r}
+
+cutoff.hall <- quantile(bc.data$hall, 0.8)
+cutoff.hnt <- quantile(bc.data$hnt, 0.8)
+
+bc.data$class <- (bc.data$hall > cutoff.hall) == (bc.data$hnt > cutoff.hnt)
+
+bc.data$class[which(bc.data$class == TRUE)] <- "Agreement"
+bc.data$class[which(bc.data$class == FALSE)] <- "Disagreement"
+
+x <- c("Protein", "Hype (NT) BC:", "Hype (All) BC:", "Class:")
+y <- sprintf("{point.%s:.2f}", c("protein", "hnt", "hact", "class"))
+tltip <- tooltip_table(x,y)
+
+bc.data %>%
+  hchart("point", hcaes(x = hall, y = hnt, group = class)) %>%
+  hc_colors(c("lime", "red")) %>%
+  hc_xAxis(title = list(text = "Hypergraph Betweenness Centrality - Active and Passive Members")) %>%
+  hc_yAxis(title = list(text = "Hypergraph Betweenness Centrality - Active and Non-Terminating Passive Members")) %>%
+  hc_tooltip(useHTML = TRUE, headerFormat = "", pointFormat = tltip)
+```
+
+### Classifications Made By Graph Methods
+
+Lorem Ipsum yada yada yada
+
+Row
+----------
+
+### Pearson's Moment Correlation Coefficient
+
+```{r}
+gauge(round(cor(bc.data$hall, bc.data$hnt), digits = 2),
+  min = 0,
+  max = 1,
+  gaugeSectors(danger = c(0, 0.7),
+               warning = c(0.7, 0.9),
+               success = c(0.9, 1)
+               )
+)
+```
+
+### Class Agreement
+
+```{r}
+gauge(round(length(which(bc.data$class == "Agreement"))/length(bc.data$class), digits = 2),
+  min = 0,
+  max = 1,
+  gaugeSectors(danger = c(0, 0.7),
+               warning = c(0.7, 0.9),
+               success = c(0.9, 1)
+               )
+)
+```
+
+Row {data-height=500}
+----------
+
+### **Active and Passive Members vs Active Members** {data-width=800}
+
+```{r}
+
+cutoff.hall <- quantile(bc.data$hall, 0.8)
+cutoff.hact <- quantile(bc.data$hact, 0.8)
+
+bc.data$class <- (bc.data$hall > cutoff.hall) == (bc.data$hact > cutoff.hact)
+
+bc.data$class[which(bc.data$class == TRUE)] <- "Agreement"
+bc.data$class[which(bc.data$class == FALSE)] <- "Disagreement"
+
+x <- c("Protein", "Hype (Act) BC:", "Hype (All) BC:", "Class:")
+y <- sprintf("{point.%s:.2f}", c("protein", "hact", "hall", "class"))
+tltip <- tooltip_table(x,y)
+
+bc.data %>%
+  hchart("point", hcaes(x = hall, y = hact, group = class)) %>%
+  hc_colors(c("lime", "red")) %>%
+  hc_xAxis(title = list(text = "Hypergraph Betweenness Centrality - Active and Passive Members")) %>%
+  hc_yAxis(title = list(text = "Hypergraph Betweenness Centrality - Active Members")) %>%
+  hc_tooltip(useHTML = TRUE, headerFormat = "", pointFormat = tltip)
+```
+
+### Classifications Made By Graph Methods
+
+Lorem Ipsum yada yada yada
+
+Row
+----------
+
+### Pearson's Moment Correlation Coefficient
+
+```{r}
+gauge(round(cor(bc.data$hall, bc.data$hact), digits = 2),
+  min = 0,
+  max = 1,
+  gaugeSectors(danger = c(0, 0.7),
+               warning = c(0.7, 0.9),
+               success = c(0.9, 1)
+               )
+)
+```
+
+### Class Agreement
+
+```{r}
+gauge(round(length(which(bc.data$class == "Agreement"))/length(bc.data$class), digits = 2),
+  min = 0,
+  max = 1,
+  gaugeSectors(danger = c(0, 0.7),
+               warning = c(0.7, 0.9),
+               success = c(0.9, 1)
+               )
+)
+```
+
+Row {data-height=500}
+----------
+
+### **Active Members vs Active and Non-Terminating Passive Members** {data-width=800}
+
+```{r}
+
+cutoff.hact <- quantile(bc.data$hact, 0.8)
+cutoff.hnt <- quantile(bc.data$hnt, 0.8)
+
+bc.data$class <- (bc.data$hact > cutoff.hact) == (bc.data$hnt > cutoff.hnt)
+
+bc.data$class[which(bc.data$class == TRUE)] <- "Agreement"
+bc.data$class[which(bc.data$class == FALSE)] <- "Disagreement"
+
+x <- c("Protein", "Hype (Act) BC:", "Hype (NT) BC:", "Class:")
+y <- sprintf("{point.%s:.2f}", c("protein", "hact", "hnt", "class"))
+tltip <- tooltip_table(x,y)
+
+bc.data %>%
+  hchart("point", hcaes(x = hact, y = hnt, group = class)) %>%
+  hc_colors(c("lime", "red")) %>%
+  hc_xAxis(title = list(text = "Hypergraph Betweenness Centrality - Active Members")) %>%
+  hc_yAxis(title = list(text = "Hypergraph Betweenness Centrality - Active and Non-Terminating Passive Members")) %>%
+  hc_tooltip(useHTML = TRUE, headerFormat = "", pointFormat = tltip)
+```
+
+### Classifications Made By Graph Methods
+
+Lorem Ipsum yada yada yada
+
+Row
+----------
+
+### Pearson's Moment Correlation Coefficient
+
+```{r}
+gauge(round(cor(bc.data$hall, bc.data$hnt), digits = 2),
+  min = 0,
+  max = 1,
+  gaugeSectors(danger = c(0, 0.7),
+               warning = c(0.7, 0.9),
+               success = c(0.9, 1)
+               )
+)
+```
+
+### Class Agreement
+
+```{r}
+gauge(round(length(which(bc.data$class == "Agreement"))/length(bc.data$class), digits = 2),
+  min = 0,
+  max = 1,
+  gaugeSectors(danger = c(0, 0.7),
+               warning = c(0.7, 0.9),
+               success = c(0.9, 1)
+               )
+)
+```
+
+
+
 
 

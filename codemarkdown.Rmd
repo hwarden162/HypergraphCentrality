@@ -213,6 +213,51 @@ return bc_all, bc_nt, bc_act
 
 # BetweennessCode
 
+This script calculates all versions of betweenness centrality and saves them.
+
+Firstly, the required packages are loaded
+
+```{r}
+library(igraph)
+library(reticulate)
+```
+
+Then, the "default" virtual environment is loaded for reticulate, this already has the numpy and networkx packages installed on it. Also, the HypergraphBC code from above is loaded into the environment, allowing access to both functions from the R environment.
+
+```{r}
+use_virtualenv("default")
+source_python("/Users/hugh/Documents/University/Maths/Year4/Project/RCode/CentralityCode/HypergraphBC.py")
+```
+
+The data previously calculated is loaded
+
+```{r}
+load("/Users/hugh/Documents/University/Maths/Year4/Project/RCode/CentralityCode/Data/Constructions.RData")
+```
+
+The python code to calculate the dual adjacency matrix is called. The result is then binarised and loops are removed.
+
+```{r}
+hypergaph.dual_adj_mat <- get_hyperedge_dual_adj_mat(ppi.inc_mat)
+hypergaph.dual_adj_mat <- matrix(as.numeric(hypergaph.dual_adj_mat > 0), ncol = ncol(hypergaph.dual_adj_mat))
+diag(hypergaph.dual_adj_mat) <- 0
+```
+
+Then, the python code to calculate all forms of betweenness centrality is called and so is the traditional graph betweenness centrality.
+
+```{r}
+hypergraph.bc <- get_hypergraph_betweenness(hypergaph.dual_adj_mat, ppi.inc_mat)
+names(hypergraph.bc) <- c("all", "nt", "act")
+graph.bc <- betweenness(ppi.graph)
+```
+
+All pertinent data is then collected in a data frame and saved
+
+```{r}
+bc.data <- data.frame(protein = rownames(ppi.inc_mat), gdeg = degree(ppi.graph), ncomp = apply(ppi.inc_mat, 1, sum),graph = graph.bc, hall = hypergraph.bc$all, hnt = hypergraph.bc$nt, hact = hypergraph.bc$act)
+save(bc.data, file = "/Users/hugh/Documents/University/Maths/Year4/Project/RCode/CentralityCode/Data/Betweenness.RData")
+```
+
 
 
 
