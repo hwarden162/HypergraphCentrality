@@ -10,6 +10,7 @@ output:
 ```{r setup, include=FALSE}
 library(flexdashboard)
 library(highcharter)
+library(psych)
 load("/Users/hugh/Documents/University/Maths/Year4/Project/RCode/CentralityCode/Data/Betweenness.RData")
 ```
 
@@ -22,7 +23,7 @@ Row {data-height=800}
 knitr::include_url("codemarkdown.html", height = "800px")
 ```
 
-BC Comp
+Hype BC vs Graph BC
 ==========
 
 Row {data-height=500}
@@ -31,18 +32,20 @@ Row {data-height=500}
 ### **Active and Passive Members** {data-width=800}
 
 ```{r}
-x <- c("Protein", "Graph BC:", "Hype (All) BC:", "Hyper Degree:")
-y <- sprintf("{point.%s:.2f}", c("protein", "graph", "hall", "ncomp"))
+cutoff.hype <- quantile(bc.data$hall, 0.8)
+cutoff.graph <- quantile(bc.data$graph, 0.8)
+
+bc.data$class <- ((bc.data$hall > cutoff.hype) == (bc.data$graph > cutoff.graph))
+
+x <- c("Protein", "Graph BC:", "Hype (All) BC:", "Agreement")
+y <- sprintf("{point.%s:.2f}", c("protein", "graph", "hall", "class"))
 tltip <- tooltip_table(x,y)
 
 bc.data %>%
-  hchart("point", hcaes(x = graph, y = hall), colorKey = "ncomp") %>%
-  hc_colorAxis(minColor = "blue",
-               maxColor = "cyan",
-               min = 0,
-               max = max(bc.data$ncomp))%>%
+  hchart("point", hcaes(x = graph, y = hall, group = class)) %>%
+  hc_colors(c("red", "lime")) %>%
   hc_xAxis(title = list(text = "Graph Betweenness Centrality")) %>%
-  hc_yAxis(title = list(text = "Hypergraph Betweenness Centrality - Active and Passive Members")) %>%
+  hc_yAxis(title = list(text = "Hypergraph Betweenness Centrality - Active and Non-Terminating Passive Members")) %>%
   hc_tooltip(useHTML = TRUE, headerFormat = "", pointFormat = tltip)
 ```
 
@@ -50,6 +53,10 @@ bc.data %>%
 
 Lorem Ipsum yada yada yada
 
+Row
+----------
+
+### Pearson's Moment Correlation Coefficient
 ```{r}
 gauge(round(cor(bc.data$graph, bc.data$hall), digits = 2),
   min = 0,
@@ -61,22 +68,38 @@ gauge(round(cor(bc.data$graph, bc.data$hall), digits = 2),
 )
 ```
 
+### Class Agreement
+
+```{r}
+gauge(round(length(which(bc.data$class))/length(bc.data$class), digits = 2),
+  min = 0,
+  max = 1,
+  gaugeSectors(danger = c(0, 0.7),
+               warning = c(0.7, 0.9),
+               success = c(0.9, 1)
+               )
+)
+```
+
+
 Row {data-height=500}
 ----------
 
 ### **Active and Non-Terminating Passive Members** {data-width=800}
 
 ```{r}
-x <- c("Protein", "Graph BC:", "Hype (NT) BC:", "Hyper Degree:")
-y <- sprintf("{point.%s:.2f}", c("protein", "graph", "hnt", "ncomp"))
+cutoff.hype <- quantile(bc.data$hnt, 0.8)
+cutoff.graph <- quantile(bc.data$graph, 0.8)
+
+bc.data$class <- ((bc.data$hnt > cutoff.hype) == (bc.data$graph > cutoff.graph))
+
+x <- c("Protein", "Graph BC:", "Hype (NT) BC:", "Agreement")
+y <- sprintf("{point.%s:.2f}", c("protein", "graph", "hnt", "class"))
 tltip <- tooltip_table(x,y)
 
 bc.data %>%
-  hchart("point", hcaes(x = graph, y = hnt), colorKey = "ncomp") %>%
-  hc_colorAxis(minColor = "blue",
-               maxColor = "cyan",
-               min = 0,
-               max = max(bc.data$ncomp))%>%
+  hchart("point", hcaes(x = graph, y = hnt, group = class)) %>%
+  hc_colors(c("red", "lime")) %>%
   hc_xAxis(title = list(text = "Graph Betweenness Centrality")) %>%
   hc_yAxis(title = list(text = "Hypergraph Betweenness Centrality - Active and Non-Terminating Passive Members")) %>%
   hc_tooltip(useHTML = TRUE, headerFormat = "", pointFormat = tltip)
@@ -86,6 +109,10 @@ bc.data %>%
 
 Lorem Ipsum yada yada yada
 
+Row
+----------
+
+### Pearson's Moment Correlation Coefficient
 ```{r}
 gauge(round(cor(bc.data$graph, bc.data$hnt), digits = 2),
   min = 0,
@@ -97,22 +124,38 @@ gauge(round(cor(bc.data$graph, bc.data$hnt), digits = 2),
 )
 ```
 
+### Class Agreement
+
+```{r}
+gauge(round(length(which(bc.data$class))/length(bc.data$class), digits = 2),
+  min = 0,
+  max = 1,
+  gaugeSectors(danger = c(0, 0.7),
+               warning = c(0.7, 0.9),
+               success = c(0.9, 1)
+               )
+)
+```
+
+
 Row {data-height=500}
 ----------
 
 ### **Active Members** {data-width=800}
 
 ```{r}
-x <- c("Protein", "Graph BC:", "Hype (Act) BC:", "Hyper Degree:")
-y <- sprintf("{point.%s:.2f}", c("protein", "graph", "hact", "ncomp"))
+cutoff.hype <- quantile(bc.data$hact, 0.8)
+cutoff.graph <- quantile(bc.data$graph, 0.8)
+
+bc.data$class <- ((bc.data$hact > cutoff.hype) == (bc.data$graph > cutoff.graph))
+
+x <- c("Protein", "Graph BC:", "Hype (Act) BC:", "Agreement")
+y <- sprintf("{point.%s:.2f}", c("protein", "graph", "hact", "class"))
 tltip <- tooltip_table(x,y)
 
 bc.data %>%
-  hchart("point", hcaes(x = graph, y = hact), colorKey = "ncomp") %>%
-  hc_colorAxis(minColor = "blue",
-               maxColor = "cyan",
-               min = 0,
-               max = max(bc.data$ncomp))%>%
+  hchart("point", hcaes(x = graph, y = hact, group = class)) %>%
+  hc_colors(c("red", "lime")) %>%
   hc_xAxis(title = list(text = "Graph Betweenness Centrality")) %>%
   hc_yAxis(title = list(text = "Hypergraph Betweenness Centrality - Active Members")) %>%
   hc_tooltip(useHTML = TRUE, headerFormat = "", pointFormat = tltip)
@@ -122,6 +165,10 @@ bc.data %>%
 
 Lorem Ipsum yada yada yada
 
+Row
+----------
+
+### Pearson's Moment Correlation Coefficient
 ```{r}
 gauge(round(cor(bc.data$graph, bc.data$hact), digits = 2),
   min = 0,
@@ -131,6 +178,43 @@ gauge(round(cor(bc.data$graph, bc.data$hact), digits = 2),
                success = c(0.9, 1)
                )
 )
+```
+
+### Class Agreement
+
+```{r}
+gauge(round(length(which(bc.data$class))/length(bc.data$class), digits = 2),
+  min = 0,
+  max = 1,
+  gaugeSectors(danger = c(0, 0.7),
+               warning = c(0.7, 0.9),
+               success = c(0.9, 1)
+               )
+)
+```
+
+
+Hype Deg vs Graph Deg
+==========
+
+Row
+----------
+
+```{r}
+
+cutoff.hype <- quantile(bc.data$ncomp, 0.8)
+cutoff.graph <- quantile(bc.data$gdeg, 0.8)
+
+bc.data$class <- ((bc.data$ncomp > cutoff.hype) == (bc.data$gdeg > cutoff.graph))
+
+x <- c("Protein", "Graph Deg:", "Hype Deg:", "Agreement")
+y <- sprintf("{point.%s:.2f}", c("protein", "gdeg", "ncomp", "class"))
+tltip <- tooltip_table(x,y)
+
+bc.data %>%
+  hchart("point", hcaes(x = gdeg, y = ncomp, group = class)) %>%
+  hc_colors(c("red", "lime")) %>%
+  hc_tooltip(useHTML = TRUE, headerFormat = "", pointFormat = tltip)
 ```
 
 

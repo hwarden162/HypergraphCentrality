@@ -6,7 +6,7 @@ source_python("/Users/hugh/Documents/University/Maths/Year4/Project/RCode/Centra
 
 load("/Users/hugh/Documents/University/Maths/Year4/Project/RCode/CentralityCode/Data/Constructions.RData")
 
-hypergaph.dual_adj_mat <- get_hyperedge_connectivity_adj_mat_fast_2(ppi.inc_mat)
+hypergaph.dual_adj_mat <- get_hyperedge_dual_adj_mat(ppi.inc_mat)
 
 hypergaph.dual_adj_mat <- matrix(as.numeric(hypergaph.dual_adj_mat > 0), ncol = ncol(hypergaph.dual_adj_mat))
 diag(hypergaph.dual_adj_mat) <- 0

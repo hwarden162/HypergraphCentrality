@@ -91,4 +91,130 @@ save(ppi.graph, ppi.inc_mat, file = "Data/Constructions.RData")
 
 # HypergraphBC
 
+This is a python script containing functions to be imported into R via the reticulate packages. It calculates the dual hypergraph adjacency matrix and three types of betweenness centrality for hypergraphs.
+
+Firstly, the required packages are imported
+
+```{python}
+import networkx as nx
+import numpy as np
+```
+
+## Hypergraph Dual Adjacency Matrix
+
+Then, there is a function to calculate the dual hypergraph adjacency matrix via the incidence matrix
+
+```{python}
+def get_hyperedge_connectivity_adj_mat(inc_mat):
+    tinc_mat = np.transpose(inc_mat)
+    ret_mat = tinc_mat @ inc_mat
+    return np.matrix(ret_mat)
+```
+
+This calculates the dual adjacency matrix in terms of the icindence matrix. It is processed later to binarise it and remove the leading diagonal.
+
+## Hypergraph Betweenness Centrality
+
+Then, the hypergraph dual adjacency matrix and the incidence matrix are used as parameters in a function to calculate betweenness centrality for hypergraphs.
+
+Firstly, the function is defined and the required variables are initialised
+
+```{python}
+def get_hypergraph_betweenness(adj_mat, inc_mat):
+    g = nx.convert_matrix.from_numpy_matrix(adj_mat)
+    n_vert = adj_mat.shape[0]
+    m_vert = inc_mat.shape[0]
+    bc_all = np.zeros(m_vert)
+    bc_nt = np.zeros(m_vert)
+    bc_act = np.zeros(m_vert)
+```
+
+g is the support graph of the adjacency matrix. n_vert is the number of hyperedges of the hypergraph (or the number of vertices in the dual support graph). m_vert is the the number of vertices in the hypergraph. bc_* are then vectors containing the betweenness centrality of the vertices, with bc_all being active and passive members, bc_nt being active and non-terminating passive members and bc_act being active members.
+
+Then each pair of vertices is selected
+
+```{python}
+for i in range(m_vert-1):
+    for j in range(i+1, m_vert):
+```
+
+and for each pair of vertices the following is calculated.
+
+Temporary update variables are created for each betweenness centrality
+
+```{python}
+temp_bc_all = np.zeros(m_vert)
+temp_bc_nt = np.zeros(m_vert)
+temp_bc_act = np.zeros(m_vert)
+```
+
+Then a temporary copy of the dual support graph is created and has two vertices added
+
+```{python}
+temp = g.copy()
+temp.add_node(n_vert+1)
+temp.add_node(n_vert+2)
+```
+
+This pair of vertices are modelling the pairs of vertices being iterated over. Each of these vertices are then connected to vertices of the dual support graph if the modelled vertices and hyperedges are incident in the original hypergraph.
+
+```{python}
+for k in range(n_vert):
+    if inc_mat[i,k] == 1:
+        temp.add_edge(n_vert+1, k)
+for k in range(n_vert):
+    if inc_mat[j,k] == 1:
+        temp.add_edge(k,n_vert+2)
+```
+
+Then all of the shortest paths between these two new vertices are calculated and iterated over. For each path, the hyperpath induced subhypergraphis calculated by selecting all columns of the incidence matrix that represent hyperedges from the path. A row sum is then used to identify degree in this subhypergraph to ascertain membership type (an extra check is made to see if passive members are non-terminating). Then the relevant entries of the update variables are incremented.
+
+```{python}
+count = 0
+for p in nx.all_shortest_paths(temp, n_vert+1, n_vert+2):
+    temp_inc_mat = inc_mat[:,p[1:(len(p)-1)]]
+    r_sum = np.squeeze(np.asarray(temp_inc_mat.sum(1)))
+    temp_bc_all[np.where(r_sum > 0)] += 1
+    temp_bc_act[np.where(r_sum > 1)] += 1
+    if len(p) > 4:
+        temp_inc_mat = inc_mat[:,p[2:(len(p)-2)]]
+        r_sum = np.squeeze(np.asarray(temp_inc_mat.sum(1)))
+        temp_bc_nt[np.where(r_sum > 0)] += 1
+    else:
+        temp_bc_nt[np.where(r_sum > 0)] += 1
+    count += 1
+```
+
+The count is increased every time and if the count is positive, the betweenness centrality updates are divided by count to give proportions, the update values of path endpoints are zeroed and then the betweenness centrality variables are updated.
+
+```{python}
+if count > 0:
+                temp_bc_all = temp_bc_all / count
+                temp_bc_nt = temp_bc_nt / count
+                temp_bc_act = temp_bc_act / count
+                
+                temp_bc_all[i] = 0
+                temp_bc_all[j] = 0
+                temp_bc_nt[i] = 0
+                temp_bc_nt[j] = 0
+                temp_bc_act[i] = 0
+                temp_bc_act[j] = 0
+            
+                bc_all += temp_bc_all
+                bc_nt += temp_bc_nt
+                bc_act += temp_bc_act
+```
+
+These betweenness centrality values are then returned as a list.
+
+```{python}
+return bc_all, bc_nt, bc_act
+```
+
 # BetweennessCode
+
+
+
+
+
+
