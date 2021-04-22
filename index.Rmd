@@ -12,7 +12,6 @@ output:
 ```{r setup, include=FALSE}
 library(flexdashboard)
 library(highcharter)
-library(psych)
 load("/Users/hugh/Documents/University/Maths/Year4/Project/RCode/CentralityCode/Data/Betweenness.RData")
 ```
 
@@ -218,6 +217,8 @@ tltip <- tooltip_table(x,y)
 bc.data %>%
   hchart("point", hcaes(x = gdeg, y = ncomp, group = class)) %>%
   hc_colors(c("red", "lime")) %>%
+  hc_xAxis(title = list(text = "Graph Degree")) %>%
+  hc_yAxis(title = list(text = "Hypergraph Degree")) %>%
   hc_tooltip(useHTML = TRUE, headerFormat = "", pointFormat = tltip)
 ```
 
@@ -283,6 +284,8 @@ tltip <- tooltip_table(x,y)
 bc.data %>%
   hchart("point", hcaes(x = gdeg, y = graph, group = class)) %>%
   hc_colors(c("lime", "yellow", "orange", "red")) %>%
+  hc_xAxis(title = list(text = "Graph Degree")) %>%
+  hc_yAxis(title = list(text = "Graph Betweenness Centrality")) %>%
   hc_tooltip(useHTML = TRUE, headerFormat = "", pointFormat = tltip)
 ```
 
@@ -349,6 +352,8 @@ tltip <- tooltip_table(x,y)
 bc.data %>%
   hchart("point", hcaes(x = ncomp, y = hall, group = class)) %>%
   hc_colors(c("lime", "yellow", "orange", "red")) %>%
+  hc_xAxis(title = list(text = "Hypergraph Degree")) %>%
+  hc_yAxis(title = list(text = "Hypergraph Betweenness Centrality - Active and Passive Members"))%>%
   hc_tooltip(useHTML = TRUE, headerFormat = "", pointFormat = tltip)
 ```
 
@@ -412,6 +417,8 @@ tltip <- tooltip_table(x,y)
 bc.data %>%
   hchart("point", hcaes(x = ncomp, y = hnt, group = class)) %>%
   hc_colors(c("lime", "yellow", "orange", "red")) %>%
+  hc_xAxis(title = list(text = "Hypergraph Degree")) %>%
+  hc_yAxis(title = list(text = "Hypergraph Betweenness Centrality - Active and Non-Terminating Passive Members"))%>%
   hc_tooltip(useHTML = TRUE, headerFormat = "", pointFormat = tltip)
 ```
 
@@ -475,6 +482,8 @@ tltip <- tooltip_table(x,y)
 bc.data %>%
   hchart("point", hcaes(x = ncomp, y = hact, group = class)) %>%
   hc_colors(c("lime", "yellow", "orange", "red")) %>%
+  hc_xAxis(title = list(text = "Hypergraph Degree")) %>%
+  hc_yAxis(title = list(text = "Hypergraph Betweenness Centrality - Active Members")) %>%
   hc_tooltip(useHTML = TRUE, headerFormat = "", pointFormat = tltip)
 ```
 
