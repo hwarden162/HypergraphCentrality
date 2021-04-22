@@ -38,15 +38,18 @@ cutoff.graph <- quantile(bc.data$graph, 0.8)
 
 bc.data$class <- ((bc.data$hall > cutoff.hype) == (bc.data$graph > cutoff.graph))
 
+bc.data$class[which(bc.data$class == TRUE)] <- "Agreement" 
+bc.data$class[which(bc.data$class == FALSE)] <- "Disagreement" 
+
 x <- c("Protein", "Graph BC:", "Hype (All) BC:", "Agreement:")
 y <- sprintf("{point.%s:.2f}", c("protein", "graph", "hall", "class"))
 tltip <- tooltip_table(x,y)
 
 bc.data %>%
   hchart("point", hcaes(x = graph, y = hall, group = class)) %>%
-  hc_colors(c("red", "lime")) %>%
+  hc_colors(c("lime", "red")) %>%
   hc_xAxis(title = list(text = "Graph Betweenness Centrality")) %>%
-  hc_yAxis(title = list(text = "Hypergraph Betweenness Centrality - Active and Non-Terminating Passive Members")) %>%
+  hc_yAxis(title = list(text = "Hypergraph Betweenness Centrality - Active and Passive Members")) %>%
   hc_tooltip(useHTML = TRUE, headerFormat = "", pointFormat = tltip)
 ```
 
@@ -94,13 +97,16 @@ cutoff.graph <- quantile(bc.data$graph, 0.8)
 
 bc.data$class <- ((bc.data$hnt > cutoff.hype) == (bc.data$graph > cutoff.graph))
 
+bc.data$class[which(bc.data$class == TRUE)] <- "Agreement" 
+bc.data$class[which(bc.data$class == FALSE)] <- "Disagreement" 
+
 x <- c("Protein", "Graph BC:", "Hype (NT) BC:", "Agreement:")
 y <- sprintf("{point.%s:.2f}", c("protein", "graph", "hnt", "class"))
 tltip <- tooltip_table(x,y)
 
 bc.data %>%
   hchart("point", hcaes(x = graph, y = hnt, group = class)) %>%
-  hc_colors(c("red", "lime")) %>%
+  hc_colors(c("lime", "red")) %>%
   hc_xAxis(title = list(text = "Graph Betweenness Centrality")) %>%
   hc_yAxis(title = list(text = "Hypergraph Betweenness Centrality - Active and Non-Terminating Passive Members")) %>%
   hc_tooltip(useHTML = TRUE, headerFormat = "", pointFormat = tltip)
@@ -150,13 +156,16 @@ cutoff.graph <- quantile(bc.data$graph, 0.8)
 
 bc.data$class <- ((bc.data$hact > cutoff.hype) == (bc.data$graph > cutoff.graph))
 
+bc.data$class[which(bc.data$class == TRUE)] <- "Agreement" 
+bc.data$class[which(bc.data$class == FALSE)] <- "Disagreement"
+
 x <- c("Protein", "Graph BC:", "Hype (Act) BC:", "Agreement:")
 y <- sprintf("{point.%s:.2f}", c("protein", "graph", "hact", "class"))
 tltip <- tooltip_table(x,y)
 
 bc.data %>%
   hchart("point", hcaes(x = graph, y = hact, group = class)) %>%
-  hc_colors(c("red", "lime")) %>%
+  hc_colors(c("lime", "red")) %>%
   hc_xAxis(title = list(text = "Graph Betweenness Centrality")) %>%
   hc_yAxis(title = list(text = "Hypergraph Betweenness Centrality - Active Members")) %>%
   hc_tooltip(useHTML = TRUE, headerFormat = "", pointFormat = tltip)
@@ -210,13 +219,16 @@ cutoff.graph <- quantile(bc.data$gdeg, 0.8)
 
 bc.data$class <- ((bc.data$ncomp > cutoff.hype) == (bc.data$gdeg > cutoff.graph))
 
+bc.data$class[which(bc.data$class == TRUE)] <- "Agreement"
+bc.data$class[which(bc.data$class == FALSE)] <- "Disagreement"
+
 x <- c("Protein", "Graph Deg:", "Hype Deg:", "Agreement:")
 y <- sprintf("{point.%s:.2f}", c("protein", "gdeg", "ncomp", "class"))
 tltip <- tooltip_table(x,y)
 
 bc.data %>%
   hchart("point", hcaes(x = gdeg, y = ncomp, group = class)) %>%
-  hc_colors(c("red", "lime")) %>%
+  hc_colors(c("lime", "red")) %>%
   hc_xAxis(title = list(text = "Graph Degree")) %>%
   hc_yAxis(title = list(text = "Hypergraph Degree")) %>%
   hc_tooltip(useHTML = TRUE, headerFormat = "", pointFormat = tltip)

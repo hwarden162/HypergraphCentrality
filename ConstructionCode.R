@@ -3,7 +3,7 @@ library(igraph)
 setwd("/Users/hugh/Documents/University/Maths/Year4/Project/RCode/CentralityCode")
 
 mips.full <- read.csv("/Users/hugh/Documents/University/Maths/Year4/Project/RCode/CentralityCode/Data/mips.txt", sep = "\t")
-mips.full <- mips.full[1:217,]
+mips.full <- mips.full[1:324,]
 mips.edgelist <- mips.full[,1:2]
 
 ppi.full <- as.data.frame(read.csv("/Users/hugh/Documents/University/Maths/Year4/Project/RCode/BIOGRID-ORGANISM-Saccharomyces_cerevisiae_S288c-4.3.195.tab3.txt", sep = "\t"))
