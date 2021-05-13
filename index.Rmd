@@ -55,7 +55,7 @@ bc.data %>%
 
 ### **Active and Passive Members**
 
-Lorem Ipsum yada yada yada
+Refer to write up for analysis
 
 Row
 ----------
@@ -75,7 +75,7 @@ gauge(round(cor(bc.data$graph, bc.data$hall), digits = 2),
 ### Class Agreement
 
 ```{r}
-gauge(round(length(which(bc.data$class))/length(bc.data$class), digits = 2),
+gauge(round(length(which(bc.data$class == "Agreement"))/length(bc.data$class), digits = 2),
   min = 0,
   max = 1,
   gaugeSectors(danger = c(0, 0.7),
@@ -114,7 +114,7 @@ bc.data %>%
 
 ### **Active and Non-Terminating Passive Members**
 
-Lorem Ipsum yada yada yada
+Refer to write up for analysis
 
 Row
 ----------
@@ -134,7 +134,7 @@ gauge(round(cor(bc.data$graph, bc.data$hnt), digits = 2),
 ### Class Agreement
 
 ```{r}
-gauge(round(length(which(bc.data$class))/length(bc.data$class), digits = 2),
+gauge(round(length(which(bc.data$class == "Agreement"))/length(bc.data$class), digits = 2),
   min = 0,
   max = 1,
   gaugeSectors(danger = c(0, 0.7),
@@ -173,7 +173,7 @@ bc.data %>%
 
 ### **Active Members**
 
-Lorem Ipsum yada yada yada
+Refer to write up for analysis
 
 Row
 ----------
@@ -193,7 +193,7 @@ gauge(round(cor(bc.data$graph, bc.data$hact), digits = 2),
 ### Class Agreement
 
 ```{r}
-gauge(round(length(which(bc.data$class))/length(bc.data$class), digits = 2),
+gauge(round(length(which(bc.data$class == "Agreement"))/length(bc.data$class), digits = 2),
   min = 0,
   max = 1,
   gaugeSectors(danger = c(0, 0.7),
@@ -236,7 +236,7 @@ bc.data %>%
 
 ### **Active and Passive Members** 
 
-Lorem Ipsum yada yada yada
+Refer to write up for analysis
 
 Row
 ----------
@@ -256,7 +256,7 @@ gauge(round(cor(bc.data$gdeg, bc.data$ncomp), digits = 2),
 ### Class Agreement
 
 ```{r}
-gauge(round(length(which(bc.data$class))/length(bc.data$class), digits = 2),
+gauge(round(length(which(bc.data$class == "Agreement"))/length(bc.data$class), digits = 2),
   min = 0,
   max = 1,
   gaugeSectors(danger = c(0, 0.7),
@@ -303,7 +303,7 @@ bc.data %>%
 
 ### Classifications Made By Graph Methods
 
-Lorem Ipsum yada yada yada
+Refer to write up for analysis
 
 Row
 ----------
@@ -371,7 +371,7 @@ bc.data %>%
 
 ### Classifications Made By Graph Methods
 
-Lorem Ipsum yada yada yada
+Refer to write up for analysis
 
 Row
 ----------
@@ -436,7 +436,7 @@ bc.data %>%
 
 ### Classifications Made By Graph Methods
 
-Lorem Ipsum yada yada yada
+Refer to write up for analysis
 
 Row
 ----------
@@ -501,7 +501,7 @@ bc.data %>%
 
 ### Classifications Made By Graph Methods
 
-Lorem Ipsum yada yada yada
+Refer to write up for analysis
 
 Row
 ----------
@@ -564,7 +564,7 @@ bc.data %>%
 
 ### Classifications Made By Graph Methods
 
-Lorem Ipsum yada yada yada
+Refer to write up for analysis
 
 Row
 ----------
@@ -624,7 +624,7 @@ bc.data %>%
 
 ### Classifications Made By Graph Methods
 
-Lorem Ipsum yada yada yada
+Refer to write up for analysis
 
 Row
 ----------
@@ -684,7 +684,7 @@ bc.data %>%
 
 ### Classifications Made By Graph Methods
 
-Lorem Ipsum yada yada yada
+Refer to write up for analysis
 
 Row
 ----------
