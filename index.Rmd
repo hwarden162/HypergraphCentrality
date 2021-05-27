@@ -12,7 +12,7 @@ output:
 ```{r setup, include=FALSE}
 library(flexdashboard)
 library(highcharter)
-load("/Users/hugh/Documents/University/Maths/Year4/Project/RCode/CentralityCode/Data/Betweenness.RData")
+load("/Users/hwarden/Documents/University/Maths/Year4/Project/RCode/CentralityCode/Data/Betweenness.RData")
 ```
 
 Coding
@@ -692,7 +692,7 @@ Row
 ### Pearson's Moment Correlation Coefficient
 
 ```{r}
-gauge(round(cor(bc.data$hall, bc.data$hnt), digits = 2),
+gauge(round(cor(bc.data$hact, bc.data$hnt), digits = 2),
   min = 0,
   max = 1,
   gaugeSectors(danger = c(0, 0.7),
